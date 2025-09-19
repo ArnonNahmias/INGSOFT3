@@ -1,0 +1,92 @@
+services:
+  # === ENTORNO QA ===
+  backend-qa:
+    image: felipeganame/tp2-backend:v1.0
+    ports:
+      - "8081:8080"  # Puerto diferente para QA
+    environment:
+      - DB_HOST=db-qa
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=proyecto_qa
+      - GIN_MODE=debug
+      - LOG_LEVEL=debug
+      - ENVIRONMENT=qa
+    depends_on:
+      - db-qa
+    networks:
+      - qa-network
+
+  frontend-qa:
+    image: felipeganame/tp2-frontend:v1.0
+    ports:
+      - "81:80"      # Puerto diferente para QA
+    depends_on:
+      - backend-qa
+    networks:
+      - qa-network
+
+  db-qa:
+    image: mysql:5.7
+    platform: linux/amd64
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: proyecto_qa
+    ports:
+      - "3307:3306"  # Puerto diferente para QA
+    volumes:
+      - dbdata-qa:/var/lib/mysql
+    networks:
+      - qa-network
+
+  # === ENTORNO PROD ===
+  backend-prod:
+    image: felipeganame/tp2-backend:v1.0
+    ports:
+      - "8080:8080"  # Puerto estándar para PROD
+    environment:
+      - DB_HOST=db-prod
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=proyecto_prod
+      - GIN_MODE=release
+      - LOG_LEVEL=info
+      - ENVIRONMENT=production
+    depends_on:
+      - db-prod
+    networks:
+      - prod-network
+
+  frontend-prod:
+    image: felipeganame/tp2-frontend:v1.0
+    ports:
+      - "80:80"      # Puerto estándar para PROD
+    depends_on:
+      - backend-prod
+    networks:
+      - prod-network
+
+  db-prod:
+    image: mysql:5.7
+    platform: linux/amd64
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: proyecto_prod
+    ports:
+      - "3306:3306"  # Puerto estándar para PROD
+    volumes:
+      - dbdata-prod:/var/lib/mysql
+    networks:
+      - prod-network
+
+networks:
+  qa-network:
+    driver: bridge
+  prod-network:
+    driver: bridge
+
+volumes:
+  dbdata-qa:
+  dbdata-prod:
