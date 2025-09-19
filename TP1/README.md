@@ -1,16 +1,16 @@
-# INGSOFT3
+# Proyecto Base para Práctica de Git
 
-## 🚀 Probando comandos básicos de GitHub 
+Este proyecto es parte del Trabajo Práctico 01 – Git Básico.
 
-Estoy practicando los **comandos básicos de GitHub** para el **TP1 de Ingeniería de Software**
+Contiene archivos simples para que puedas practicar creación de ramas, commits, solución de errores y versionado.
 
-### ¿Qué estoy haciendo exactamente?
-- ✅ Modifico el readme y subo los cambios
-- ✅ Creo un archivo .gitignore en la carpeta principal
-- ✅ Con git status veo todo lo que se modifico
-- ✅ Con git add . actualizo la rama con todos los cambios
-- ✅ Con git commit -m "" puedo escribir entre las comillas un comentario/msj de que es lo que hice
-- ✅ Con git push lo subo a github
+## Estructura
+- `src/app.js`: contiene un script básico.
+- `data/info.txt`: contiene datos de ejemplo.
+
+
+
+# Error solucionado
 
 
 
