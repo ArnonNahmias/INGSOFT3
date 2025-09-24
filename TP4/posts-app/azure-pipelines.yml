@@ -41,25 +41,66 @@ stages:
             fetchDepth: 1
             
           - task: PowerShell@2
-            displayName: 'Debug: List Directory Contents'
+            displayName: 'Debug: Complete Directory Analysis'
             inputs:
               targetType: 'inline'
               script: |
-                Write-Host "=== Current Directory Structure ==="
+                Write-Host "======================================"
+                Write-Host "COMPLETE DIRECTORY ANALYSIS"
+                Write-Host "======================================"
+                Write-Host ""
                 Write-Host "Build.SourcesDirectory: $(Build.SourcesDirectory)"
-                Get-ChildItem "$(Build.SourcesDirectory)" -Force | Format-Table Name, Mode, LastWriteTime -AutoSize
-                Write-Host "=== Checking TP4 folder ==="
-                if (Test-Path "$(Build.SourcesDirectory)\TP4") { 
-                  Write-Host "✅ TP4 folder exists"
-                  Get-ChildItem "$(Build.SourcesDirectory)\TP4" -Force | Format-Table Name, Mode -AutoSize
-                  if (Test-Path "$(Build.SourcesDirectory)\TP4\posts-app") {
-                    Write-Host "✅ posts-app folder exists"
-                    Get-ChildItem "$(Build.SourcesDirectory)\TP4\posts-app" -Force | Format-Table Name, Mode -AutoSize
-                  } else { Write-Host "❌ posts-app folder missing" }
-                } else { Write-Host "❌ TP4 folder missing" }
-                Write-Host "=== Checking corrected paths ==="
-                if (Test-Path "$(Build.SourcesDirectory)\$(frontendPath)") { Write-Host "✅ frontend path exists" } else { Write-Host "❌ frontend path missing: $(Build.SourcesDirectory)\$(frontendPath)" }
-                if (Test-Path "$(Build.SourcesDirectory)\$(backendPath)") { Write-Host "✅ backend path exists" } else { Write-Host "❌ backend path missing: $(Build.SourcesDirectory)\$(backendPath)" }
+                Write-Host "Working Directory: $(pwd)"
+                Write-Host "Agent.WorkFolder: $(Agent.WorkFolder)"
+                Write-Host ""
+                
+                Write-Host "=== ROOT DIRECTORY CONTENTS ==="
+                try {
+                  Get-ChildItem "$(Build.SourcesDirectory)" -Force | ForEach-Object { 
+                    Write-Host "$($_.Mode) $($_.Name)" 
+                  }
+                } catch { Write-Host "ERROR listing root: $($_.Exception.Message)" }
+                Write-Host ""
+                
+                Write-Host "=== SEARCHING FOR TP4 RECURSIVELY ==="
+                try {
+                  Get-ChildItem "$(Build.SourcesDirectory)" -Recurse -Directory -Name "TP4" -ErrorAction SilentlyContinue | ForEach-Object {
+                    Write-Host "Found TP4 at: $_"
+                  }
+                } catch { Write-Host "No TP4 found" }
+                Write-Host ""
+                
+                Write-Host "=== SEARCHING FOR posts-app RECURSIVELY ==="
+                try {
+                  Get-ChildItem "$(Build.SourcesDirectory)" -Recurse -Directory -Name "posts-app" -ErrorAction SilentlyContinue | ForEach-Object {
+                    Write-Host "Found posts-app at: $_"
+                  }
+                } catch { Write-Host "No posts-app found" }
+                Write-Host ""
+                
+                Write-Host "=== SEARCHING FOR package.json FILES ==="
+                try {
+                  Get-ChildItem "$(Build.SourcesDirectory)" -Recurse -File -Name "package.json" -ErrorAction SilentlyContinue | ForEach-Object {
+                    Write-Host "Found package.json at: $_"
+                  }
+                } catch { Write-Host "No package.json found" }
+                Write-Host ""
+                
+                Write-Host "=== TESTING EXPECTED PATHS ==="
+                $expectedPaths = @(
+                  "$(Build.SourcesDirectory)\TP4",
+                  "$(Build.SourcesDirectory)\TP4\posts-app", 
+                  "$(Build.SourcesDirectory)\$(frontendPath)",
+                  "$(Build.SourcesDirectory)\$(backendPath)"
+                )
+                foreach ($path in $expectedPaths) {
+                  if (Test-Path $path) { 
+                    Write-Host "✅ EXISTS: $path"
+                  } else { 
+                    Write-Host "❌ MISSING: $path"
+                  }
+                }
+                Write-Host "======================================"
             
           - task: PowerShell@2
             displayName: 'Verify Node.js Installation'
@@ -74,8 +115,27 @@ stages:
             inputs:
               targetType: 'inline'
               script: |
-                cd "$(Build.SourcesDirectory)\$(frontendPath)"
-                & "$(nodePath)\npm.cmd" install
+                $frontendDir = "$(Build.SourcesDirectory)\$(frontendPath)"
+                Write-Host "Attempting to change to: $frontendDir"
+                
+                if (Test-Path $frontendDir) {
+                  Write-Host "✅ Frontend directory exists!"
+                  cd $frontendDir
+                  Write-Host "Current directory: $(pwd)"
+                  
+                  if (Test-Path "package.json") {
+                    Write-Host "✅ package.json found, installing dependencies..."
+                    & "$(nodePath)\npm.cmd" install
+                  } else {
+                    Write-Host "❌ package.json not found in frontend directory"
+                    exit 1
+                  }
+                } else {
+                  Write-Host "❌ Frontend directory does not exist: $frontendDir"
+                  Write-Host "Available directories in SourcesDirectory:"
+                  Get-ChildItem "$(Build.SourcesDirectory)" -Directory -Recurse -Depth 2 | ForEach-Object { Write-Host "  $($_.FullName)" }
+                  exit 1
+                }
             
           - task: PowerShell@2
             displayName: 'Build Frontend'
@@ -121,8 +181,27 @@ stages:
             inputs:
               targetType: 'inline'
               script: |
-                cd "$(Build.SourcesDirectory)\$(backendPath)"
-                & "$(nodePath)\npm.cmd" install
+                $backendDir = "$(Build.SourcesDirectory)\$(backendPath)"
+                Write-Host "Attempting to change to: $backendDir"
+                
+                if (Test-Path $backendDir) {
+                  Write-Host "✅ Backend directory exists!"
+                  cd $backendDir
+                  Write-Host "Current directory: $(pwd)"
+                  
+                  if (Test-Path "package.json") {
+                    Write-Host "✅ package.json found, installing dependencies..."
+                    & "$(nodePath)\npm.cmd" install
+                  } else {
+                    Write-Host "❌ package.json not found in backend directory"
+                    exit 1
+                  }
+                } else {
+                  Write-Host "❌ Backend directory does not exist: $backendDir"
+                  Write-Host "Available directories in SourcesDirectory:"
+                  Get-ChildItem "$(Build.SourcesDirectory)" -Directory -Recurse -Depth 2 | ForEach-Object { Write-Host "  $($_.FullName)" }
+                  exit 1
+                }
             
           - task: PowerShell@2
             displayName: 'Build Backend (TypeScript)'
