@@ -6,9 +6,9 @@ trigger:
       - main
   paths:
     include:
-      - front/*
-      - back/*
-      - azure-pipelines.yml
+      - TP4/posts-app/front/*
+      - TP4/posts-app/back/*
+      - TP4/posts-app/azure-pipelines.yml
 
 # Pool: usar el agente self-hosted que ya está configurado
 pool:
