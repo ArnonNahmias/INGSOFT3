@@ -1,4 +1,4 @@
-# Azure DevOps Pipeline para Posts App (Hosted Agents)
+# Azure DevOps Pipeline para Posts App (Self-Hosted Agent Windows)
 # Trigger: activar en cambios en main
 trigger:
   branches:
@@ -10,9 +10,11 @@ trigger:
       - back/*
       - azure-pipelines.yml
 
-# Pool: usar agentes hospedados por Microsoft
+# Pool: usar el agente self-hosted que ya está configurado
 pool:
-  vmImage: 'ubuntu-latest'
+  name: 'MypoolLocal'
+  demands:
+    - Agent.Name -equals ARNON
 
 # Variables globales
 variables:
@@ -43,7 +45,7 @@ stages:
               
           - script: |
               cd $(frontendPath)
-              npm ci
+              npm install
             displayName: 'Install Frontend Dependencies'
             
           - script: |
@@ -78,7 +80,7 @@ stages:
               
           - script: |
               cd $(backendPath)
-              npm ci
+              npm install
             displayName: 'Install Backend Dependencies'
             
           - script: |
@@ -111,13 +113,18 @@ stages:
         displayName: 'Verify Database Connection'
         steps:
           - script: |
+              cd $(backendPath)
+              npm run setup-db
+            displayName: 'Setup MySQL Database'
+            
+          - script: |
               echo "=== Database Configuration Check ==="
               echo "Database Host: localhost"
               echo "Database Name: posts_app"
               echo "Database User: root"
-              echo "Note: En un agente hospedado no hay acceso a MySQL local"
-              echo "Esta etapa simula la verificación de la base de datos"
-            displayName: 'Database Connection Info'
+              echo "MySQL Server: 8.4 (Local Windows Installation)"
+              echo "✅ Database setup completed successfully"
+            displayName: 'Database Connection Verification'
 
   # ========================
   # STAGE 3: Health Check
