@@ -19,8 +19,9 @@ pool:
 # Variables globales
 variables:
   buildConfiguration: 'Release'
-  frontendPath: 'front'
-  backendPath: 'back'
+  projectPath: 'TP4/posts-app'
+  frontendPath: 'TP4/posts-app/front'
+  backendPath: 'TP4/posts-app/back'
   nodeVersion: '18.x'
   nodePath: 'C:\Program Files\nodejs'
 
@@ -47,9 +48,18 @@ stages:
                 Write-Host "=== Current Directory Structure ==="
                 Write-Host "Build.SourcesDirectory: $(Build.SourcesDirectory)"
                 Get-ChildItem "$(Build.SourcesDirectory)" -Force | Format-Table Name, Mode, LastWriteTime -AutoSize
-                Write-Host "=== Checking for front and back folders ==="
-                if (Test-Path "$(Build.SourcesDirectory)\front") { Write-Host "✅ front folder exists" } else { Write-Host "❌ front folder missing" }
-                if (Test-Path "$(Build.SourcesDirectory)\back") { Write-Host "✅ back folder exists" } else { Write-Host "❌ back folder missing" }
+                Write-Host "=== Checking TP4 folder ==="
+                if (Test-Path "$(Build.SourcesDirectory)\TP4") { 
+                  Write-Host "✅ TP4 folder exists"
+                  Get-ChildItem "$(Build.SourcesDirectory)\TP4" -Force | Format-Table Name, Mode -AutoSize
+                  if (Test-Path "$(Build.SourcesDirectory)\TP4\posts-app") {
+                    Write-Host "✅ posts-app folder exists"
+                    Get-ChildItem "$(Build.SourcesDirectory)\TP4\posts-app" -Force | Format-Table Name, Mode -AutoSize
+                  } else { Write-Host "❌ posts-app folder missing" }
+                } else { Write-Host "❌ TP4 folder missing" }
+                Write-Host "=== Checking corrected paths ==="
+                if (Test-Path "$(Build.SourcesDirectory)\$(frontendPath)") { Write-Host "✅ frontend path exists" } else { Write-Host "❌ frontend path missing: $(Build.SourcesDirectory)\$(frontendPath)" }
+                if (Test-Path "$(Build.SourcesDirectory)\$(backendPath)") { Write-Host "✅ backend path exists" } else { Write-Host "❌ backend path missing: $(Build.SourcesDirectory)\$(backendPath)" }
             
           - task: PowerShell@2
             displayName: 'Verify Node.js Installation'
@@ -87,7 +97,7 @@ stages:
           - task: PublishBuildArtifacts@1
             displayName: 'Publish Frontend Artifacts'
             inputs:
-              PathtoPublish: '$(frontendPath)/.next'
+              PathtoPublish: '$(Build.SourcesDirectory)/$(frontendPath)/.next'
               ArtifactName: 'frontend-build'
               publishLocation: 'Container'
 
@@ -131,7 +141,7 @@ stages:
           - task: PublishBuildArtifacts@1
             displayName: 'Publish Backend Artifacts'
             inputs:
-              PathtoPublish: '$(backendPath)/dist'
+              PathtoPublish: '$(Build.SourcesDirectory)/$(backendPath)/dist'
               ArtifactName: 'backend-build'
               publishLocation: 'Container'
 
