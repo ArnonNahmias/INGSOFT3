@@ -40,6 +40,18 @@ stages:
             fetchDepth: 1
             
           - task: PowerShell@2
+            displayName: 'Debug: List Directory Contents'
+            inputs:
+              targetType: 'inline'
+              script: |
+                Write-Host "=== Current Directory Structure ==="
+                Write-Host "Build.SourcesDirectory: $(Build.SourcesDirectory)"
+                Get-ChildItem "$(Build.SourcesDirectory)" -Force | Format-Table Name, Mode, LastWriteTime -AutoSize
+                Write-Host "=== Checking for front and back folders ==="
+                if (Test-Path "$(Build.SourcesDirectory)\front") { Write-Host "✅ front folder exists" } else { Write-Host "❌ front folder missing" }
+                if (Test-Path "$(Build.SourcesDirectory)\back") { Write-Host "✅ back folder exists" } else { Write-Host "❌ back folder missing" }
+            
+          - task: PowerShell@2
             displayName: 'Verify Node.js Installation'
             inputs:
               targetType: 'inline'
