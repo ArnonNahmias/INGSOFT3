@@ -38,10 +38,10 @@ stages:
           - checkout: self
             fetchDepth: 1
             
-          - task: NodeTool@0
-            displayName: 'Setup Node.js'
-            inputs:
-              versionSpec: $(nodeVersion)
+          - script: |
+              node --version
+              npm --version
+            displayName: 'Verify Node.js Installation'
               
           - script: |
               cd $(frontendPath)
@@ -73,10 +73,10 @@ stages:
           - checkout: self
             fetchDepth: 1
             
-          - task: NodeTool@0
-            displayName: 'Setup Node.js'
-            inputs:
-              versionSpec: $(nodeVersion)
+          - script: |
+              node --version
+              npm --version
+            displayName: 'Verify Node.js Installation'
               
           - script: |
               cd $(backendPath)
@@ -90,7 +90,7 @@ stages:
             
           - script: |
               cd $(backendPath)
-              npm run lint
+              echo "Skipping lint for backend (no lint script configured)"
             displayName: 'Lint Backend'
             continueOnError: true
             
