@@ -22,6 +22,7 @@ variables:
   frontendPath: 'front'
   backendPath: 'back'
   nodeVersion: '18.x'
+  nodePath: 'C:\Program Files\nodejs'
 
 # Stages del pipeline
 stages:
@@ -39,23 +40,23 @@ stages:
             fetchDepth: 1
             
           - script: |
-              node --version
-              npm --version
+              "$(nodePath)\node.exe" --version
+              "$(nodePath)\npm.cmd" --version
             displayName: 'Verify Node.js Installation'
               
           - script: |
               cd $(frontendPath)
-              npm install
+              "$(nodePath)\npm.cmd" install
             displayName: 'Install Frontend Dependencies'
             
           - script: |
               cd $(frontendPath)
-              npm run build
+              "$(nodePath)\npm.cmd" run build
             displayName: 'Build Frontend'
             
           - script: |
               cd $(frontendPath)
-              npm run lint
+              "$(nodePath)\npm.cmd" run lint
             displayName: 'Lint Frontend'
             continueOnError: true
             
@@ -74,18 +75,18 @@ stages:
             fetchDepth: 1
             
           - script: |
-              node --version
-              npm --version
+              "$(nodePath)\node.exe" --version
+              "$(nodePath)\npm.cmd" --version
             displayName: 'Verify Node.js Installation'
               
           - script: |
               cd $(backendPath)
-              npm install
+              "$(nodePath)\npm.cmd" install
             displayName: 'Install Backend Dependencies'
             
           - script: |
               cd $(backendPath)
-              npm run build
+              "$(nodePath)\npm.cmd" run build
             displayName: 'Build Backend (TypeScript)'
             
           - script: |
@@ -114,7 +115,7 @@ stages:
         steps:
           - script: |
               cd $(backendPath)
-              npm run setup-db
+              "$(nodePath)\npm.cmd" run setup-db
             displayName: 'Setup MySQL Database'
             
           - script: |
