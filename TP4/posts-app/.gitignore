@@ -1,0 +1,226 @@
+# =====================================
+# .gitignore para Posts App
+# =====================================
+
+# ====================
+# DEPENDENCIAS
+# ====================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ====================
+# ARCHIVOS DE ENTORNO
+# ====================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ====================
+# BUILDS Y COMPILADOS
+# ====================
+# Backend TypeScript
+back/dist/
+back/build/
+*.tsbuildinfo
+
+# Frontend Next.js
+front/.next/
+front/out/
+front/build/
+front/dist/
+
+# ====================
+# CACHE Y TEMPORALES
+# ====================
+.cache
+.temp
+.tmp
+*.tmp
+*.temp
+
+# Next.js cache
+front/.next/
+front/.swc/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# ESLint cache
+.eslintcache
+
+# ====================
+# LOGS
+# ====================
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ====================
+# RUNTIME
+# ====================
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# ====================
+# COVERAGE Y TESTS
+# ====================
+lib-cov
+coverage/
+*.lcov
+.nyc_output
+.coverage
+.coverage.*
+junit.xml
+test-results/
+
+# ====================
+# BASE DE DATOS
+# ====================
+*.sqlite
+*.db
+*.sql
+database.db
+db.json
+
+# Archivos de migración temporal
+*.migration.tmp
+
+# ====================
+# EDITORES E IDEs
+# ====================
+# Visual Studio Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# Vim
+*.swp
+*.swo
+*~
+
+# ====================
+# SISTEMA OPERATIVO
+# ====================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.directory
+
+# ====================
+# HERRAMIENTAS DE DESARROLLO
+# ====================
+# Webpack
+.webpack/
+
+# Parcel
+.parcel-cache/
+
+# Vite
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
+# ====================
+# DEPLOYMENT Y CI/CD
+# ====================
+# Vercel
+.vercel
+
+# Docker
+.dockerignore
+Dockerfile.prod
+
+# ====================
+# ARCHIVOS ESPECÍFICOS DEL PROYECTO
+# ====================
+# Archivos de configuración local
+config.local.js
+config.local.ts
+
+# Uploads y archivos de usuario
+uploads/
+public/uploads/
+static/uploads/
+
+# Certificados SSL
+*.pem
+*.key
+*.crt
+*.cert
+
+# ====================
+# OTROS
+# ====================
+# npm pack
+*.tgz
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env.test
+
+# Serverless directories
+.serverless/
+
+# FuseBox cache
+.fusebox/
+
+# DynamoDB Local files
+.dynamodb/
+
+# TernJS port file
+.tern-port
+
+# Stores VSCode versions used for testing VSCode extensions
+.vscode-test/
+
+# Yarn v2
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*

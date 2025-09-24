@@ -1,0 +1,12 @@
+# Frontend .dockerignore  
+*.md
+.git
+.gitignore
+Dockerfile
+docker-compose*
+.env*
+node_modules
+build
+.eslintcache
+coverage
+.nyc_output

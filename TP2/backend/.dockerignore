@@ -1,0 +1,10 @@
+# Backend .dockerignore
+*.md
+.git
+.gitignore
+Dockerfile
+docker-compose*
+.env*
+node_modules
+uploads/*
+!uploads/.gitkeep
